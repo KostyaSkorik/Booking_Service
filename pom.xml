@@ -21,6 +21,7 @@
         <spring-boot.version>4.0.1</spring-boot.version>
         <postgres.version>42.7.9</postgres.version>
         <lombok.version>1.18.42</lombok.version>
+        <flyway.version>11.20.2</flyway.version>
     </properties>
 
 
@@ -44,6 +45,12 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
                 <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+                <scope>compile</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
