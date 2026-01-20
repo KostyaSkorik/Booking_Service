@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: presentation
+  datasource:
+    url: jdbc:postgresql://localhost:5430/booking_test_db
+    username: test
+    password: test
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    database: postgresql
