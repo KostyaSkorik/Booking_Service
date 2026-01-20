@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: Booking_Service
+  datasource:
+    username: test
+    password: test
+    url: jdbc:postgresql://localhost:5430/booking_test_db
+  jpa:
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
