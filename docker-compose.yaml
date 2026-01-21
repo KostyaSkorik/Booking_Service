@@ -10,92 +10,92 @@ services:
       - "5430:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-  kafka-1:
-    image: bitnamilegacy/kafka
-    container_name: kafka-1
-    ports:
-      - "9092:9092"
-    environment:
-      # Уникальный идентификатор брокера в кластере. Каждый брокер должен иметь свой ID
-      - KAFKA_CFG_NODE_ID=1
-
-      # Общий идентификатор кластера для всех брокеров. Все ноды должны использовать одинаковый cluster.id, чтобы быть частью одного кластера.
-      - KAFKA_KRAFT_CLUSTER_ID=3dua4-iWRCGav4Co8ZfpVw
-
-      # Роли, которые выполняет брокер. controller,broker означает, что брокер может быть как контроллером (управляет метаданными кластера), так и обычным брокером (хранит и обрабатывает данные)
-      - KAFKA_CFG_PROCESS_ROLES=controller,broker
-
-      # Список контроллеров кластера. Формат: ID@host:port. Указывает, какие ноды участвуют в выборах контроллера и хранении метаданных.
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9091,2@kafka-2:9091,3@kafka-3:9091
-
-        #Список сетевых интерфейсов и протоколов, на которых брокер будет принимать соединения. Пример:
-        # PLAINTEXT://:9090 — обычный Kafka-трафик.
-      # CONTROLLER://:9091 — внутренний трафик между контроллерами.
-      # EXTERNAL://:9092 — внешний трафик (например, для клиентов).
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9090,CONTROLLER://:9091,EXTERNAL://:9092
-
-      #Какие адреса будут сообщаться клиентам для подключения. Например, EXTERNAL://${HOSTNAME:-localhost}:9092 означает, что клиенты должны подключаться к порту 9092 на текущем хосте
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-1:9090,EXTERNAL://${HOSTNAME:-localhost}:9092
-
-      #Сопоставление ролей слушателей и протоколов безопасности. Например, CONTROLLER:PLAINTEXT — внутренний трафик контроллера без шифрования.
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
-
-      #Название слушателя, используемого для внутренних сообщений контроллера (например, CONTROLLER).
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-
-      # Название слушателя, используемого для внутреннего общения между брокерами (например, PLAINTEXT).
-      - KAFKA_CFG_INTERN_BROKER_LISTENER_NAME=PLAINTEXT
-
-      #Количество реплик для внутреннего топика __consumer_offsets (хранит смещения потребителей). Значение 3 — три реплики на разных брокерах.
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
-
-      # Количество реплик для внутреннего топика, хранящего состояние транзакций. Значение 3 — три реплики.
-      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
-
-      # Количество реплик по умолчанию для всех новых топиков. Значение 3 — каждый топик будет иметь три реплики.
-      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
-    volumes:
-      - server-1:/bitnami/kafka
-  kafka-2:
-    image: bitnamilegacy/kafka
-    container_name: kafka-2
-    ports:
-      - "9094:9094"
-    environment:
-      - KAFKA_CFG_NODE_ID=2
-      - KAFKA_KRAFT_CLUSTER_ID=3dua4-iWRCGav4Co8ZfpVw
-      - KAFKA_CFG_PROCESS_ROLES=controller,broker
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9091,2@kafka-2:9091,3@kafka-3:9091
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9090,CONTROLLER://:9091,EXTERNAL://:9094
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-2:9090,EXTERNAL://${HOSTNAME:-localhost}:9094
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_INTERN_BROKER_LISTENER_NAME=PLAINTEXT
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
-      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
-      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
-    volumes:
-      - server-2:/bitnami/kafka
-  kafka-3:
-    image: bitnamilegacy/kafka
-    container_name: kafka-3
-    ports:
-      - "9096:9096"
-    environment:
-      - KAFKA_CFG_NODE_ID=3
-      - KAFKA_KRAFT_CLUSTER_ID=3dua4-iWRCGav4Co8ZfpVw
-      - KAFKA_CFG_PROCESS_ROLES=controller,broker
-      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9091,2@kafka-2:9091,3@kafka-3:9091
-      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9090,CONTROLLER://:9091,EXTERNAL://:9096
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-3:9090,EXTERNAL://${HOSTNAME:-localhost}:9096
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
-      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
-      - KAFKA_CFG_INTERN_BROKER_LISTENER_NAME=PLAINTEXT
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
-      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
-      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
-    volumes:
-      - server-3:/bitnami/kafka
+#  kafka-1:
+#    image: bitnamilegacy/kafka
+#    container_name: kafka-1
+#    ports:
+#      - "9092:9092"
+#    environment:
+#      # Уникальный идентификатор брокера в кластере. Каждый брокер должен иметь свой ID
+#      - KAFKA_CFG_NODE_ID=1
+#
+#      # Общий идентификатор кластера для всех брокеров. Все ноды должны использовать одинаковый cluster.id, чтобы быть частью одного кластера.
+#      - KAFKA_KRAFT_CLUSTER_ID=3dua4-iWRCGav4Co8ZfpVw
+#
+#      # Роли, которые выполняет брокер. controller,broker означает, что брокер может быть как контроллером (управляет метаданными кластера), так и обычным брокером (хранит и обрабатывает данные)
+#      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+#
+#      # Список контроллеров кластера. Формат: ID@host:port. Указывает, какие ноды участвуют в выборах контроллера и хранении метаданных.
+#      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9091,2@kafka-2:9091,3@kafka-3:9091
+#
+#        #Список сетевых интерфейсов и протоколов, на которых брокер будет принимать соединения. Пример:
+#        # PLAINTEXT://:9090 — обычный Kafka-трафик.
+#      # CONTROLLER://:9091 — внутренний трафик между контроллерами.
+#      # EXTERNAL://:9092 — внешний трафик (например, для клиентов).
+#      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9090,CONTROLLER://:9091,EXTERNAL://:9092
+#
+#      #Какие адреса будут сообщаться клиентам для подключения. Например, EXTERNAL://${HOSTNAME:-localhost}:9092 означает, что клиенты должны подключаться к порту 9092 на текущем хосте
+#      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-1:9090,EXTERNAL://${HOSTNAME:-localhost}:9092
+#
+#      #Сопоставление ролей слушателей и протоколов безопасности. Например, CONTROLLER:PLAINTEXT — внутренний трафик контроллера без шифрования.
+#      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+#
+#      #Название слушателя, используемого для внутренних сообщений контроллера (например, CONTROLLER).
+#      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+#
+#      # Название слушателя, используемого для внутреннего общения между брокерами (например, PLAINTEXT).
+#      - KAFKA_CFG_INTERN_BROKER_LISTENER_NAME=PLAINTEXT
+#
+#      #Количество реплик для внутреннего топика __consumer_offsets (хранит смещения потребителей). Значение 3 — три реплики на разных брокерах.
+#      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+#
+#      # Количество реплик для внутреннего топика, хранящего состояние транзакций. Значение 3 — три реплики.
+#      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+#
+#      # Количество реплик по умолчанию для всех новых топиков. Значение 3 — каждый топик будет иметь три реплики.
+#      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+#    volumes:
+#      - server-1:/bitnami/kafka
+#  kafka-2:
+#    image: bitnamilegacy/kafka
+#    container_name: kafka-2
+#    ports:
+#      - "9094:9094"
+#    environment:
+#      - KAFKA_CFG_NODE_ID=2
+#      - KAFKA_KRAFT_CLUSTER_ID=3dua4-iWRCGav4Co8ZfpVw
+#      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+#      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9091,2@kafka-2:9091,3@kafka-3:9091
+#      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9090,CONTROLLER://:9091,EXTERNAL://:9094
+#      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-2:9090,EXTERNAL://${HOSTNAME:-localhost}:9094
+#      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+#      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+#      - KAFKA_CFG_INTERN_BROKER_LISTENER_NAME=PLAINTEXT
+#      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+#      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+#      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+#    volumes:
+#      - server-2:/bitnami/kafka
+#  kafka-3:
+#    image: bitnamilegacy/kafka
+#    container_name: kafka-3
+#    ports:
+#      - "9096:9096"
+#    environment:
+#      - KAFKA_CFG_NODE_ID=3
+#      - KAFKA_KRAFT_CLUSTER_ID=3dua4-iWRCGav4Co8ZfpVw
+#      - KAFKA_CFG_PROCESS_ROLES=controller,broker
+#      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9091,2@kafka-2:9091,3@kafka-3:9091
+#      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9090,CONTROLLER://:9091,EXTERNAL://:9096
+#      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-3:9090,EXTERNAL://${HOSTNAME:-localhost}:9096
+#      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+#      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+#      - KAFKA_CFG_INTERN_BROKER_LISTENER_NAME=PLAINTEXT
+#      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=3
+#      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=3
+#      - KAFKA_DEFAULT_REPLICATION_FACTOR=3
+#    volumes:
+#      - server-3:/bitnami/kafka
   minio:
     image: minio/minio
     ports:
@@ -105,8 +105,17 @@ services:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: password
     command: server /data --console-address ":9001" #говоришь MinIO: «Запусти админку именно на этом порту».
+    networks:
+      - minio-network
+    volumes:
+      - minio-volume:/data
 volumes:
   server-1:
   server-2:
   server-3:
+  minio-volume:
+    driver: local
   postgres_data:
+networks:
+  minio-network:
+    driver: bridge

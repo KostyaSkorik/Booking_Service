@@ -6,8 +6,18 @@ spring:
     username: test
     password: test
     driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    # Spring Boot по умолчанию ищет в classpath:db/migration
+    # Так как persistence теперь в classpath, он сам найдет папку
+    locations: classpath:db/migration
+    baseline-on-migrate: true # Полезно для первой инициализации
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     database: postgresql
+    hibernate:
+      ddl-auto: none
+
+
 
