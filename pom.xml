@@ -22,6 +22,7 @@
         <postgres.version>42.7.2</postgres.version>
         <lombok.version>1.18.30</lombok.version>
         <flyway.version>10.1.0</flyway.version>
+        <jakarta.validation.version>4.0.0-M1</jakarta.validation.version>
     </properties>
 
 
@@ -55,6 +56,11 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-database-postgresql</artifactId>
                 <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>${jakarta.validation.version}</version>
             </dependency>
 
         </dependencies>

@@ -3,6 +3,7 @@ package by.kostya.skorik.domain.model;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -11,5 +12,5 @@ public class User {
     private String googleSub;
     private String name;
     private String email;
-    private Timestamp lastLogin;
+    private LocalDateTime lastLogin;
 }
