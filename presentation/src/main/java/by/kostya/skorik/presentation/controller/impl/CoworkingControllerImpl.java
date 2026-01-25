@@ -1,6 +1,5 @@
 package by.kostya.skorik.presentation.controller.impl;
 
-import by.kostya.skorik.domain.model.Coworking;
 import by.kostya.skorik.presentation.controller.in.CoworkingController;
 import by.kostya.skorik.presentation.dto.CoworkingDto;
 import by.kostya.skorik.presentation.mapper.DtoMapper;
@@ -19,9 +18,11 @@ public class CoworkingControllerImpl implements CoworkingController {
     private final CoworkingService coworkingService;
     private final DtoMapper dtoMapper;
 
-    public ResponseEntity<List<CoworkingDto>> getCoworkings(){
-        List<Coworking> coworkings = coworkingService.getAllAvailable();
-        return ResponseEntity.ok(coworkingService.getAllAvailable().stream().map(dtoMapper::coworkingToDto).toList());
+
+    public ResponseEntity<List<CoworkingDto>> getCoworkings() {
+        return ResponseEntity.ok(coworkingService.getAllAvailable()
+                .stream()
+                .map(dtoMapper::coworkingToDto).toList());
     }
 
 }

@@ -28,5 +28,8 @@ spring:
             scope: profile,email
 
 
-
+minio:
+  ip: http://localhost:9000
+  bucket:
+    coworking: /coworkings
 

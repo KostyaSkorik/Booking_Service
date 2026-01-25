@@ -13,7 +13,7 @@ public class CoworkingDto {
     private String description;
     private Integer capacity;
     private Type type;
-    private String imageKey;
+    private String imageUrl;
     private boolean isActive;
     private BigDecimal pricePerHour;
 }
