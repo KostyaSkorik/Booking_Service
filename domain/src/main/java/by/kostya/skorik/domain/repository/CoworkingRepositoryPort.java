@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface CoworkingRepository {
+public interface CoworkingRepositoryPort {
     Coworking save(Coworking coworking);
     Optional<Coworking> findByID(UUID id);
     List<Coworking> findAll(); //позже добавить пагинацию

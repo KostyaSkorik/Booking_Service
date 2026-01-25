@@ -1,7 +1,8 @@
-package by.kostya.skorik.service;
+package by.kostya.skorik.service.impl;
 
 import by.kostya.skorik.domain.model.User;
 import by.kostya.skorik.domain.repository.UserRepositoryPort;
+import by.kostya.skorik.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
