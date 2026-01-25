@@ -8,9 +8,7 @@ import by.kostya.skorik.persistance.repository.JpaUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 
 @Repository
@@ -23,23 +21,14 @@ public class UserJpaAdapter implements UserRepositoryPort {
 
     @Override
     public User save(User user) {
-        Optional<UserEntity> optionalFindUserEntity = jpaUserRepository.findUserEntityByGoogleSub(user.getGoogleSub());
+        UserEntity entity = userMapper.userToUserEntity(user);
+        System.out.println("DEBUG: User ID to save: " + entity.getId());
+        return userMapper.userEntityToUser(jpaUserRepository.save(entity));
+    }
 
-        if(optionalFindUserEntity.isEmpty()){
-            user.setId(UUID.randomUUID());
-            //User -> UserEntity
-            UserEntity preSave = userMapper.userToUserEntity(user);
-
-            //save is DB
-            UserEntity savedUserEntity = jpaUserRepository.save(preSave);
-
-            //UserEntity -> User
-            User savedUser = userMapper.userEntityToUser(savedUserEntity);
-            return savedUser;
-        }else {
-            UserEntity findUserEntity = optionalFindUserEntity.get();
-            findUserEntity.setLastLogin(LocalDateTime.now());
-            return userMapper.userEntityToUser(jpaUserRepository.save(findUserEntity));
-        }
+    @Override
+    public Optional<User> findByGoogleSub(String googleSub) {
+        Optional<UserEntity> optionalUserEntity = jpaUserRepository.findUserEntityByGoogleSub(googleSub);
+        return optionalUserEntity.map(userMapper::userEntityToUser);
     }
 }

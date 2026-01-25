@@ -26,9 +26,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String googleSub = oAuth2User.getAttribute("sub");
         String name = oAuth2User.getAttribute("name");
         String email = oAuth2User.getAttribute("email");
-
-
         LocalDateTime lastLogin = LocalDateTime.now();
+
         User user = new User();
 
         user.setGoogleSub(googleSub);
