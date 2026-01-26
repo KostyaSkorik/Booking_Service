@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Коворкинги | Бронирование</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .card-img { height: 200px; object-fit: cover; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+<header class="bg-white shadow-sm sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-indigo-600">Coworking Space</h1>
+        <div id="auth-section">
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+    <div id="content-area">
+        <div class="text-center py-20">
+            <h2 class="text-2xl text-gray-400">Пожалуйста, авторизуйтесь, чтобы увидеть доступные площадки</h2>
+        </div>
+    </div>
+</main>
+
+<script>
+    const AUTH_URL = 'http://localhost:8080/api/user/me';
+    const DATA_URL = 'http://localhost:8080/coworking/api/all';
+
+    function login() {
+        window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    }
+
+    async function checkAuthAndLoad() {
+        const authSection = document.getElementById('auth-section');
+        const contentArea = document.getElementById('content-area');
+
+        try {
+            // 1. Проверяем, залогинен ли пользователь
+            const res = await fetch(AUTH_URL, { credentials: 'include' });
+            const user = await res.json();
+
+            if (user && user.name) {
+                // 2. Если пользователь есть — рисуем профиль в хедере
+                authSection.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-gray-700 font-medium">${user.name}</span>
+                        <img src="${user.picture}" class="w-10 h-10 rounded-full border">
+                    </div>
+                `;
+                // 3. Загружаем данные
+                loadCoworkings();
+            } else {
+                showLoginButton();
+            }
+        } catch (e) {
+            showLoginButton();
+        }
+    }
+
+    function showLoginButton() {
+        document.getElementById('auth-section').innerHTML = `
+            <button onclick="login()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">
+                Войти через Google
+            </button>
+        `;
+    }
+
+    async function loadCoworkings() {
+        const contentArea = document.getElementById('content-area');
+        contentArea.innerHTML = '<div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="grid"></div>';
+        const grid = document.getElementById('grid');
+
+        try {
+            const response = await fetch(DATA_URL, { credentials: 'include' });
+            if (!response.ok) throw new Error('Нет доступа');
+            const data = await response.json();
+
+            grid.innerHTML = data.map(item => `
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <img src="${item.imageUrl || 'https://via.placeholder.com/400x200'}" class="w-full card-img">
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h2 class="text-xl font-bold text-gray-800">${item.name}</h2>
+                            <span class="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded uppercase">
+                                ${item.type}
+                            </span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">${item.description || ''}</p>
+                        <div class="border-t pt-4 flex justify-between items-center">
+                            <div class="text-sm text-gray-500">
+                                <span class="block"> Вместимость: <b>${item.capacity} чел.</b></span>
+                                <span class="block text-indigo-600 font-bold mt-1 text-lg">${item.pricePerHour} ₽/час</span>
+                            </div>
+                            <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+                                Бронировать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            contentArea.innerHTML = `<p class="text-red-500 text-center">Ошибка: ${error.message}</p>`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', checkAuthAndLoad);
+</script>
+</body>
+</html>

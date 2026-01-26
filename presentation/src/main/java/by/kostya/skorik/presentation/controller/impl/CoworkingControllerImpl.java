@@ -18,7 +18,7 @@ public class CoworkingControllerImpl implements CoworkingController {
     private final CoworkingService coworkingService;
     private final DtoMapper dtoMapper;
 
-
+    @Override
     public ResponseEntity<List<CoworkingDto>> getCoworkings() {
         return ResponseEntity.ok(coworkingService.getAllAvailable()
                 .stream()

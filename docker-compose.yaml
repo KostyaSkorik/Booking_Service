@@ -109,6 +109,13 @@ services:
       - minio-network
     volumes:
       - minio-volume:/data
+  frontend:
+    image: nginx:alpine
+    container_name: coworking_frontend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro # Подключаем папку с index.html
 volumes:
   server-1:
   server-2:
