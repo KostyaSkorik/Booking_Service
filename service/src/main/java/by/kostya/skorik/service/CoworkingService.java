@@ -7,6 +7,6 @@ import java.util.UUID;
 
 public interface CoworkingService{
     Coworking registerNew(Coworking coworking);
-    Coworking getById(UUID id);
+    Coworking getById(UUID id) throws Exception;
     List<Coworking> getAllAvailable();
 }

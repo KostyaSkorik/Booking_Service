@@ -20,8 +20,12 @@ public class CoworkingServiceImpl implements CoworkingService {
     }
 
     @Override
-    public Coworking getById(UUID id) {
-        return null;
+    public Coworking getById(UUID id) throws Exception {
+        if(coworkingRepositoryPort.findByID(id).isPresent()){
+           return coworkingRepositoryPort.findByID(id).get();
+        }else {
+            throw new Exception("NO Coworkings");
+        }
     }
 
     @Override

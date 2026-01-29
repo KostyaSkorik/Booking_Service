@@ -25,7 +25,8 @@ public class CoworkingJpaAdapter implements CoworkingRepositoryPort {
 
     @Override
     public Optional<Coworking> findByID(UUID id) {
-        return Optional.empty();
+        return jpaCoworkingRepository.findById(id)
+                .map(coworkingMapper::coworkingEntityToCoworking);
     }
 
     @Override

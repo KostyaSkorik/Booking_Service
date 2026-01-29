@@ -47,7 +47,7 @@ public class OAuthConfiguration {
                     httpReq.anyRequest().authenticated();
                 })
                 .oauth2Login(oauth2 -> oauth2
-                        .defaultSuccessUrl("http://localhost:3000/",true)
+                        .defaultSuccessUrl("http://localhost:3000")
                         .userInfoEndpoint(userInfo->userInfo.userService(customOAuth2UserService)))
 
                 .build();
