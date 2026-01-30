@@ -170,8 +170,11 @@
     }
 
     async function sendBooking(coworkingId, pricePerHour) {
+        // Находим элементы
         const startInput = document.getElementById('bookStart').value;
         const endInput = document.getElementById('bookEnd').value;
+        // Находим кнопку, чтобы заблокировать её (используем event.target, так как вызов идет из onclick)
+        const btn = event.target || document.querySelector('button[onclick^="sendBooking"]');
 
         if (!startInput || !endInput) {
             alert('Пожалуйста, выберите интервал времени!');
@@ -186,12 +189,16 @@
             return;
         }
 
-        // Расчет цены
+        // UX: Блокируем кнопку и меняем текст
+        const originalBtnText = btn.innerText;
+        btn.disabled = true;
+        btn.innerText = "Проверка доступности...";
+        btn.classList.add("opacity-50", "cursor-not-allowed");
+
         const diffInMs = endTime - startTime;
         const diffInHours = diffInMs / (1000 * 60 * 60);
         const totalPrice = (diffInHours * pricePerHour).toFixed(2);
 
-        // Формируем JSON (используем переменную 'user', так как она объявлена в начале скрипта)
         const bookingDto = {
             userSub: user.sub,
             coworkingId: coworkingId,
@@ -201,29 +208,37 @@
             totalPrice: parseFloat(totalPrice)
         };
 
-        console.log("Sending DTO:", bookingDto); // Для отладки в консоли (F12)
-
         try {
             const response = await fetch(`${API_BASE}/booking/api/save`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(bookingDto),
                 credentials: 'include'
             });
 
+            // Пытаемся распарсить JSON ответ (успешный или с ошибкой)
+            const result = await response.json();
+
             if (response.ok) {
-                alert(`Успешно! Бронирование создано. Итоговая сумма: ${totalPrice} ₽`);
+                // Статус 200 OK
+                alert(`✅ Успешно! Бронь подтверждена.\nСумма: ${totalPrice} ₽`);
                 loadList();
+            } else if (response.status === 409) {
+                // Статус 409 Conflict (Наше занятое время)
+                alert(`⚠️ Ошибка бронирования:\n${result.message}`);
             } else {
-                // Пытаемся прочитать текст ошибки от сервера
-                const errorText = await response.text();
-                alert(`Ошибка сервера: ${response.status}. ${errorText}`);
+                // Любая другая ошибка (500, 400 и т.д.)
+                alert(`Ошибка сервера: ${result.message || response.statusText}`);
             }
+
         } catch (e) {
-            console.error("Booking error:", e);
-            alert("Не удалось отправить запрос. Проверьте консоль браузера.");
+            console.error("Network error:", e);
+            alert("Не удалось соединиться с сервером.");
+        } finally {
+            // UX: Возвращаем кнопку в исходное состояние
+            btn.disabled = false;
+            btn.innerText = originalBtnText;
+            btn.classList.remove("opacity-50", "cursor-not-allowed");
         }
     }
 

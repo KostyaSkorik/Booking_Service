@@ -1,5 +1,6 @@
 package by.kostya.skorik.persistance.adapter;
 
+import by.kostya.skorik.domain.exception.BookingTimeIntersection;
 import by.kostya.skorik.domain.model.Booking;
 import by.kostya.skorik.domain.repository.BookingRepositoryPort;
 import by.kostya.skorik.persistance.entity.BookingEntity;
@@ -24,6 +25,14 @@ public class BookingJpaAdapter implements BookingRepositoryPort {
 
     @Override
     public Booking save(Booking booking) {
+
+        if(jpaBookingRepository.isExistIntersections(
+                booking.getCoworkingId(),
+                booking.getStartTime(),
+                booking.getEndTime())){
+            throw new BookingTimeIntersection("Время для бронирования уже занято");
+        }
+
         BookingEntity bookingEntity = bookingMapper.bookingToBookingEntity(booking);
         CoworkingEntity coworkingEntity = jpaCoworkingRepository.findById(booking.getCoworkingId())
                 .orElseThrow(() -> new EntityNotFoundException("Coworking not found"));
