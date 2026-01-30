@@ -1,6 +1,8 @@
 package by.kostya.skorik.presentation.mapper;
 
+import by.kostya.skorik.domain.model.Booking;
 import by.kostya.skorik.domain.model.Coworking;
+import by.kostya.skorik.presentation.dto.BookingDto;
 import by.kostya.skorik.presentation.dto.CoworkingDto;
 import by.kostya.skorik.presentation.dto.CoworkingProp;
 import org.mapstruct.Mapper;
@@ -16,6 +18,10 @@ public abstract class DtoMapper {
 
     @Mapping(target = "imageUrl", source = "imageKey", qualifiedByName = "buildFullUrl")
     public abstract CoworkingDto coworkingToDto(Coworking coworking);
+
+    public abstract BookingDto bookingToBookingDto(Booking booking);
+    public abstract Booking bookingDtoToBooking(BookingDto bookingDto);
+
 
     @Named("buildFullUrl")
     protected String buildFullUrl(String imageKey){

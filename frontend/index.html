@@ -156,7 +156,7 @@
                                         <input type="datetime-local" id="bookEnd" class="w-full mt-1 p-3 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition">
                                     </div>
                                 </div>
-                                <button onclick="sendBooking('${item.id}')"
+                                <button onclick="sendBooking('${item.id}', '${item.pricePerHour}')"
                                         class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 hover:shadow-xl transition-all transform active:scale-95">
                                     Подтвердить бронирование
                                 </button>
@@ -169,17 +169,62 @@
         }
     }
 
-    function sendBooking(id) {
-        const start = document.getElementById('bookStart').value;
-        const end = document.getElementById('bookEnd').value;
+    async function sendBooking(coworkingId, pricePerHour) {
+        const startInput = document.getElementById('bookStart').value;
+        const endInput = document.getElementById('bookEnd').value;
 
-        if (!start || !end) {
-            alert('Пожалуйста, выберите дату и время!');
+        if (!startInput || !endInput) {
+            alert('Пожалуйста, выберите интервал времени!');
             return;
         }
 
-        alert(`Бронирование успешно инициировано!\nID: ${id}\nСтарт: ${start}\nКонец: ${end}`);
-        // Здесь можно добавить fetch(..., { method: 'POST', body: ... })
+        const startTime = new Date(startInput);
+        const endTime = new Date(endInput);
+
+        if (startTime >= endTime) {
+            alert('Время начала должно быть раньше времени окончания!');
+            return;
+        }
+
+        // Расчет цены
+        const diffInMs = endTime - startTime;
+        const diffInHours = diffInMs / (1000 * 60 * 60);
+        const totalPrice = (diffInHours * pricePerHour).toFixed(2);
+
+        // Формируем JSON (используем переменную 'user', так как она объявлена в начале скрипта)
+        const bookingDto = {
+            userSub: user.sub,
+            coworkingId: coworkingId,
+            startTime: startInput,
+            endTime: endInput,
+            status: "BUSY",
+            totalPrice: parseFloat(totalPrice)
+        };
+
+        console.log("Sending DTO:", bookingDto); // Для отладки в консоли (F12)
+
+        try {
+            const response = await fetch(`${API_BASE}/booking/api/save`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bookingDto),
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                alert(`Успешно! Бронирование создано. Итоговая сумма: ${totalPrice} ₽`);
+                loadList();
+            } else {
+                // Пытаемся прочитать текст ошибки от сервера
+                const errorText = await response.text();
+                alert(`Ошибка сервера: ${response.status}. ${errorText}`);
+            }
+        } catch (e) {
+            console.error("Booking error:", e);
+            alert("Не удалось отправить запрос. Проверьте консоль браузера.");
+        }
     }
 
     document.addEventListener('DOMContentLoaded', init);

@@ -1,4 +1,8 @@
 spring:
+  docker:
+    compose:
+      file: /home/kostya-skorik/IdeaProjects/Booking_Service/docker-compose.yaml
+      lifecycle-management: start_and_stop
   application:
     name: presentation
   datasource:

@@ -4,12 +4,13 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Data
 public class Booking {
     private UUID id;
-    private UUID userId;
+    private String userSub;
     private UUID coworkingId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
@@ -18,7 +19,8 @@ public class Booking {
     private Long version;
 
 
-    private void calculateTotal() {
-        this.totalPrice = new BigDecimal(100);
+    private void calculateTotal(BigDecimal pricePerHouse) {
+        this.totalPrice = new BigDecimal(ChronoUnit.HOURS.between(startTime,endTime));
+        totalPrice = totalPrice.multiply(pricePerHouse);
     }
 }

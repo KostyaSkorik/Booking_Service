@@ -20,6 +20,7 @@ public class UserControllerImpl implements UserController {
         return Map.of(
                 "name", Objects.requireNonNull(oAuth2User.getAttribute("name")),
                 "email", Objects.requireNonNull(oAuth2User.getAttribute("email")),
-                "picture", Objects.requireNonNull(oAuth2User.getAttribute("picture")));
+                "picture", Objects.requireNonNull(oAuth2User.getAttribute("picture")),
+                "sub", Objects.requireNonNull(oAuth2User.getAttribute("sub")));
     }
 }

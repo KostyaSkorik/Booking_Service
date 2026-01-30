@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AmplicodePersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit moduleName="presentation" name="Default">
+        <packages>
+          <package value="by.kostya.skorik.presentation" />
+        </packages>
+      </persistence-unit>
+      <persistence-unit moduleName="service" name="Default" />
+      <persistence-unit moduleName="persistence" name="Default" />
+    </persistence-units>
+  </component>
+</project>
