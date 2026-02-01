@@ -30,10 +30,25 @@ spring:
             client-id: ${CLIENT_ID}
             client-secret: ${CLIENT_SECRET}
             scope: profile,email
-
+  kafka:
+    bootstrap-servers: localhost:9092, localhost:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 5
+      properties:
+        delivery.timeout.ms: 10000
+        linger.ms: 1000
+        request.timeout.ms: 5000
+        max.in.flight.requests.per.connection: 5
+        enable:
+          idempotence: true
 
 minio:
   ip: http://localhost:9000
   bucket:
     coworking: /coworkings
+kafka:
+  topic: create_booking_topic
 
